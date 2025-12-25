@@ -5,11 +5,12 @@ namespace BookingService.Extensions.ModelConversion;
 
 public static class RoomConversionExtensions
 {
-	public static RoomModel ToRoomModel(this Room room) =>
+	public static RoomTypeModel ToRoomTypeModel(this RoomType room) =>
 		new()
 		{
 			Id = room.Id,
-			Number = room.Number,
+			Name = room.Name,
+			TotalCount = room.TotalCount,
 			Price = room.Price
 		};
 }

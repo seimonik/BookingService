@@ -13,5 +13,10 @@ internal sealed class HotelConfiguration : DalEntityTypeConfiguration<Hotel>
 			.HasMany(h => h.Rooms)
 			.WithOne(r => r.Hotel)
 			.HasForeignKey(r => r.HotelId);
+
+		builder
+			.HasMany(h => h.RoomTypes)
+			.WithOne(r => r.Hotel)
+			.HasForeignKey(r => r.HotelId);
 	}
 }

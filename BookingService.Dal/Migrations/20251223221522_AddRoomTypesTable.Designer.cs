@@ -4,6 +4,7 @@ using BookingService.Dal;
 using BookingService.Dal.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BookingService.Dal.Migrations
 {
     [DbContext(typeof(BookingServiceDbContext))]
-    partial class BookingServiceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251223221522_AddRoomTypesTable")]
+    partial class AddRoomTypesTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,35 +70,6 @@ namespace BookingService.Dal.Migrations
                     b.HasIndex("RoomTypeId");
 
                     b.ToTable("Bookings");
-                });
-
-            modelBuilder.Entity("BookingService.Dal.Entities.Card", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<decimal>("Balance")
-                        .HasColumnType("numeric");
-
-                    b.Property<string>("CardNumber")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Cvv")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Expiry")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CardNumber")
-                        .IsUnique();
-
-                    b.ToTable("Cards");
                 });
 
             modelBuilder.Entity("BookingService.Dal.Entities.Client", b =>
@@ -166,55 +140,6 @@ namespace BookingService.Dal.Migrations
                     b.ToTable("OutboxMessages");
                 });
 
-            modelBuilder.Entity("BookingService.Dal.Entities.Promocode", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("CurrentUsages")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(0);
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
-
-                    b.Property<decimal?>("MaxDiscountAmount")
-                        .HasColumnType("numeric");
-
-                    b.Property<int>("MaxUsages")
-                        .HasColumnType("integer");
-
-                    b.Property<decimal?>("MinBookingAmount")
-                        .HasColumnType("numeric");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("integer");
-
-                    b.Property<decimal>("Value")
-                        .HasColumnType("numeric");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Promocodes");
-                });
-
             modelBuilder.Entity("BookingService.Dal.Entities.Room", b =>
                 {
                     b.Property<Guid>("Id")
@@ -266,30 +191,6 @@ namespace BookingService.Dal.Migrations
                     b.ToTable("RoomTypes");
                 });
 
-            modelBuilder.Entity("BookingService.Dal.Entities.UsedPromocodes", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("BookingId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("ClientId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("PromocodeId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClientId");
-
-                    b.HasIndex("PromocodeId");
-
-                    b.ToTable("UsedPromocodes");
-                });
-
             modelBuilder.Entity("BookingService.Dal.Entities.Booking", b =>
                 {
                     b.HasOne("BookingService.Dal.Entities.Client", "Client")
@@ -333,25 +234,6 @@ namespace BookingService.Dal.Migrations
                         .IsRequired();
 
                     b.Navigation("Hotel");
-                });
-
-            modelBuilder.Entity("BookingService.Dal.Entities.UsedPromocodes", b =>
-                {
-                    b.HasOne("BookingService.Dal.Entities.Client", "Client")
-                        .WithMany()
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BookingService.Dal.Entities.Promocode", "Promocode")
-                        .WithMany()
-                        .HasForeignKey("PromocodeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Client");
-
-                    b.Navigation("Promocode");
                 });
 
             modelBuilder.Entity("BookingService.Dal.Entities.Hotel", b =>

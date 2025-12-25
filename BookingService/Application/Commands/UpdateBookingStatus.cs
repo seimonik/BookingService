@@ -26,7 +26,7 @@ public static class UpdateBookingStatus
 		public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
 		{
 			var booking = await _dbContext.Bookings
-				.Include(x => x.Room)
+				.Include(x => x.RoomType)
 					.ThenInclude(r => r.Hotel)
 				.Include(x => x.Client)
 				.FirstOrDefaultAsync(x => x.Id == request.Request.BookingId);

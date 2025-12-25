@@ -12,8 +12,7 @@ public static class HotelConversionExtensions
 			Name = hotel.Name,
 			Address = hotel.Address,
 			Country = hotel.Country,
-			Rooms = hotel.Rooms
-				.Where(x => x.IsAvailable)
-				.Select(x => x.ToRoomModel()).ToArray()
+			RoomTypes = hotel.RoomTypes
+				.Select(x => x.ToRoomTypeModel()).ToArray()
 		};
 }

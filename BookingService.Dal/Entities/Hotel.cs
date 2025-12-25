@@ -10,4 +10,5 @@ public class Hotel : IEntity
 	public string Country { get; set; } = "";
 
 	public ICollection<Room> Rooms { get; set; } = null!;
+	public ICollection<RoomType> RoomTypes { get; set; } = null!;
 }

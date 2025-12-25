@@ -15,6 +15,11 @@ public class BookingServiceDbContext : DbContext
 	public DbSet<Hotel> Hotels { get; set; } = null!;
 	public DbSet<Room> Rooms { get; set; } = null!;
 	public DbSet<Outbox> OutboxMessages { get; set; } = null!;
+	public DbSet<RoomType> RoomTypes { get; set; } = null!;
+	public DbSet<Promocode> Promocodes { get; set; } = null!;
+	public DbSet<UsedPromocodes> UsedPromocodes { get; set; } = null!;
+	public DbSet<Card> Cards { get; set; }
+
 
 	public BookingServiceDbContext(DbContextOptions<BookingServiceDbContext> options) : base(options)
 	{

@@ -4,6 +4,7 @@ using BookingService.Dal;
 using BookingService.Dal.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BookingService.Dal.Migrations
 {
     [DbContext(typeof(BookingServiceDbContext))]
-    partial class BookingServiceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251225191403_AddCardsTable")]
+    partial class AddCardsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -83,10 +86,6 @@ namespace BookingService.Dal.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Cvv")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Expiry")
                         .IsRequired()
                         .HasColumnType("text");
 

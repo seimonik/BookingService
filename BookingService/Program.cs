@@ -1,8 +1,9 @@
 using BookingService.Dal;
 using BookingService.Dal.Extensions;
 using BookingService.Helper;
+using BookingService.Validation;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -15,7 +16,13 @@ services.AddDbContext<BookingServiceDbContext>(opt => opt.UseNpgsql(dbDataSource
 
 // Add services to the container.
 
-services.AddControllers();
+#pragma warning disable CS0618 // Тип или член устарел
+services.AddControllers().AddFluentValidation(fv =>
+{
+	fv.RegisterValidatorsFromAssemblyContaining<AddBookingModelValidator>();
+	fv.DisableDataAnnotationsValidation = true;
+});
+#pragma warning restore CS0618 // Тип или член устарел
 services.AddHostedService<KafkaConsumerService>();
 services.AddHostedService<OutboxProcessor>();
 services.AddTransient<IProducer, Producer>();
@@ -23,22 +30,31 @@ services.AddTransient<IProducer, Producer>();
 services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assembly));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options => {
-	options.MapType<DateOnly>(() => new OpenApiSchema
+builder.Services.AddSwaggerGen(options =>
+{
+	options.MapType<DateOnly>(() => new Microsoft.OpenApi.OpenApiSchema
 	{
-		Type = "string",
+		Type = Microsoft.OpenApi.JsonSchemaType.String,
 		Format = "date"
 	});
+});
+
+builder.Services.AddCors(options =>
+{
+	options.AddDefaultPolicy(
+		policy =>
+		{
+			policy.AllowAnyOrigin()
+				  .AllowAnyHeader()
+				  .AllowAnyMethod();
+		});
 });
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-	app.UseSwagger();
-	app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
@@ -46,6 +62,7 @@ app.UseAuthorization();
 
 app.Services.ApplyMigration();
 
+app.UseCors();
 app.MapControllers();
 
 app.Run();

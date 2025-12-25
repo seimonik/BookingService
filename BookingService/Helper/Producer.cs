@@ -5,7 +5,7 @@ namespace BookingService.Helper;
 
 public class Producer : IProducer
 {
-	const string HOST = "localhost:9092";
+	const string HOST = "localhost:9092"; // kafka:29092
 	const string TOPIC = "payment-service-add-booking";
 
 	//public static async void ProduceMessage(string message, string messageType)

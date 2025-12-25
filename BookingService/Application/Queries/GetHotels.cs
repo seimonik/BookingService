@@ -1,14 +1,16 @@
 ﻿using BookingService.Application.Models;
 using BookingService.Dal;
+using BookingService.Dal.Entities;
+using BookingService.Dal.Enums;
 using BookingService.Extensions.ModelConversion;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingService.Application.Queries;
 
-public class GetHotels
+public static class GetHotels
 {
-	public record Query() : IRequest<IEnumerable<HotelModel>>;
+	public record Query(string? City = null, DateOnly? Start = null, DateOnly? End = null) : IRequest<IEnumerable<HotelModel>>;
 
 	internal class Handler : IRequestHandler<Query, IEnumerable<HotelModel>>
 	{
@@ -21,12 +23,31 @@ public class GetHotels
 
 		public async Task<IEnumerable<HotelModel>> Handle(Query request, CancellationToken cancellationToken)
 		{
-			var hotels = await _dbContext.Hotels
-				.Include(x => x.Rooms)
-				.AsNoTracking()
-				.ToListAsync();
-
-			return hotels.Select(x => x.ToHotelModel()).ToList();
+			List<Hotel> availableHotels = [];
+			if (request.City != null)
+			{
+				availableHotels = await _dbContext.Hotels
+					.AsNoTracking()
+					.Include(x => x.RoomTypes)
+					.Where(h => h.Address.Contains(request.City))
+					.Where(h => h.RoomTypes != null && h.RoomTypes.Any(rt =>
+						// Подзапрос: считаем количество броней для данного типа номера
+						rt.TotalCount > _dbContext.Bookings.Count(b =>
+							b.RoomTypeId == rt.Id &&
+							b.Status != BookingStatus.Cancelled &&
+							(request.End.HasValue ? b.CheckInDate < request.End : true) &&
+							(request.Start.HasValue ? b.CheckOutDate > request.Start : true))))
+					.ToListAsync();
+			}
+			else
+			{
+				availableHotels = await _dbContext.Hotels
+					.Include(x => x.RoomTypes)
+					.Where(h => h.RoomTypes != null && h.RoomTypes.Any())
+					.AsNoTracking()
+					.ToListAsync();
+			}
+			return availableHotels.Select(x => x.ToHotelModel()).ToList();
 		}
 	}
 }

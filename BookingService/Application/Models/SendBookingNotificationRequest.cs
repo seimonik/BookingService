@@ -7,5 +7,5 @@ public class SendBookingNotificationRequest
 	public DateOnly CheckInDate { get; set; }
 	public DateOnly CheckOutDate { get; set; }
 	public ClientModel Client { get; set; } = null!;
-	public RoomNotificationRequest Room { get; set; } = null!;
+	public RoomNotificationRequest RoomType { get; set; } = null!;
 }

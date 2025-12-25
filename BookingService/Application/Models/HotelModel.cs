@@ -6,5 +6,5 @@ public class HotelModel
 	public string Name { get; set; } = "";
 	public string Address { get; set; } = "";
 	public string Country { get; set; } = "";
-	public IEnumerable<RoomModel> Rooms { get; set; } = [];
+	public IEnumerable<RoomTypeModel> RoomTypes { get; set; } = [];
 }

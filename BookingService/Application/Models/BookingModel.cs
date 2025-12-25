@@ -10,6 +10,6 @@ public class BookingModel
 	public DateTime CreatedAt { get; set; }
 	public DateOnly CheckInDate { get; set; }
 	public DateOnly CheckOutDate { get; set; }
-	public RoomModel Room { get; set; } = null!;
+	public RoomTypeModel Room { get; set; } = null!;
 	public ClientModel Client { get; set; } = null!;
 }

@@ -9,7 +9,7 @@ namespace BookingService.Helper;
 
 public class KafkaConsumerService : BackgroundService
 {
-	const string HOST = "localhost:9092";
+	const string HOST = "localhost:9092"; // kafka:29092
 	const string TOPIC = "payment-service-add-booking";
 	private readonly IServiceProvider _serviceProvider;
 

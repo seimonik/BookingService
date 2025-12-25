@@ -5,17 +5,19 @@ namespace BookingService.Extensions.ModelConversion;
 
 public static class BookingConversionExtensions
 {
-	public static Booking ToBooking(this AddBookingModel bookingModel, decimal totalPrice) =>
+	public static Booking ToBooking(this AddBookingModel bookingModel, decimal totalPrice, Guid clientId) =>
 		new()
 		{
 			Id = Guid.NewGuid(),
-			ClientId = bookingModel.ClientId,
-			RoomId = bookingModel.RoomId,
+			ClientId = clientId,
+			RoomTypeId = bookingModel.RoomTypeId,
+			//RoomId = bookingModel.RoomId,
 			Status = Dal.Enums.BookingStatus.Pending,
 			TotalPrice = totalPrice,
 			CheckInDate = bookingModel.CheckInDate,
 			CheckOutDate = bookingModel.CheckOutDate,
-			CreatedAt = DateTime.UtcNow
+			CreatedAt = DateTime.UtcNow,
+			IdempotencyKey = bookingModel.IdempotencyKey
 		};
 
 	public static BookingModel ToBookingModel(this Booking booking) =>
@@ -27,7 +29,7 @@ public static class BookingConversionExtensions
 			CreatedAt = booking.CreatedAt,
 			CheckInDate = booking.CheckInDate,
 			CheckOutDate = booking.CheckOutDate,
-			Room = booking.Room.ToRoomModel(),
+			Room = booking.RoomType.ToRoomTypeModel(),
 			Client = booking.Client.ToClientModel()
 		};
 
@@ -42,17 +44,18 @@ public static class BookingConversionExtensions
 		new()
 		{
 			BookingId = booking.Id,
-			TotalPrice = booking.Room.Price,
+			TotalPrice = booking.RoomType.Price,
 			CheckInDate = booking.CheckInDate,
 			CheckOutDate = booking.CheckOutDate,
 			Client = booking.Client.ToClientModel(),
-			Room = booking.Room.ToRoomNotificationRequest()
+			RoomType = booking.RoomType.ToRoomNotificationRequest()
 		};
 
-	private static RoomNotificationRequest ToRoomNotificationRequest(this Room room) =>
+	private static RoomNotificationRequest ToRoomNotificationRequest(this RoomType room) =>
 		new()
 		{
-			Number = room.Number,
+			//Number = room.Number,
+			TypeName = room.Name,
 			Hotel = room.Hotel.ToHotelNotificationRequest()
 		};
 
