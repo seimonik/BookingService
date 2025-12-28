@@ -132,7 +132,8 @@ public static class ValidatePromocode
 				Message = "Промокод применен",
 				DiscountAmount = discount,
 				FinalPrice = Math.Max(0, roomType.Price - discount),
-				DiscountType = promo.Type.ToString()
+				DiscountType = promo.Type.ToString(),
+				Description = promo.Description
 			};
 		}
 	}

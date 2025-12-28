@@ -20,8 +20,8 @@ public class BookingController : ControllerBase
 
 	[HttpGet]
 	[SwaggerOperation(OperationId = nameof(GetHotels))]
-	public Task<IEnumerable<HotelModel>> GetHotels() =>
-		_mediator.Send(new GetHotels.Query());
+	public Task<IEnumerable<HotelModel>> GetHotels([FromQuery] string? city = null, [FromQuery] DateOnly? start = null, [FromQuery] DateOnly? end = null) =>
+		_mediator.Send(new GetHotels.Query(city, start, end));
 
 	[HttpGet("{hotelId}")]
 	[SwaggerOperation(OperationId = nameof(GetHotel))]
@@ -58,4 +58,19 @@ public class BookingController : ControllerBase
 		[FromQuery] string fullName,
 		CancellationToken cancellationToken) =>
 		_mediator.Send(new ValidatePromocode.Query(code, roomTypeId, email, fullName), cancellationToken);
+
+	[HttpGet("byClient")]
+	public Task<IEnumerable<FullBookingModel>> GetBookings([FromQuery] Guid clientId, CancellationToken cancellationToken) =>
+		_mediator.Send(new GetBookings.Query(clientId), cancellationToken);
+
+	[HttpGet("{bookingId}/calculate-refund")]
+	public Task<decimal> CalculateRefundAmount(Guid bookingId, CancellationToken cancellationToken) =>
+		_mediator.Send(new CalculateRefundAmount.Query(bookingId), cancellationToken);
+
+	[HttpPost("{bookingId}/cancel")]
+	public async Task<IActionResult> CancelBooking(Guid bookingId, CancellationToken cancellationToken)
+	{
+		await _mediator.Send(new CancelBooking.Command(bookingId), cancellationToken);
+		return Ok();
+	}
 }

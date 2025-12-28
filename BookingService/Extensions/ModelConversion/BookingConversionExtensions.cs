@@ -33,6 +33,18 @@ public static class BookingConversionExtensions
 			Client = booking.Client.ToClientModel()
 		};
 
+	public static FullBookingModel ToFullBookingModel(this Booking booking) =>
+		new()
+		{
+			Id = booking.Id,
+			Status = booking.Status,
+			TotalPrice = booking.TotalPrice,
+			CreatedAt = booking.CreatedAt,
+			CheckInDate = booking.CheckInDate,
+			CheckOutDate = booking.CheckOutDate,
+			RoomType = booking.RoomType.ToFullRoomTypeModel()
+		};
+
 	public static AddPaymentRequest ToAddPaymentRequest(this Booking booking) =>
 		new()
 		{

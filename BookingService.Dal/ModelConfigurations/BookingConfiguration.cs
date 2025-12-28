@@ -28,5 +28,9 @@ internal sealed class BookingConfiguration : DalEntityTypeConfiguration<Booking>
 			.HasOne(b => b.Client)
 			.WithMany()
 			.HasForeignKey(b => b.ClientId);
+
+		builder
+			.HasOne(x => x.Card)
+			.WithMany();
 	}
 }

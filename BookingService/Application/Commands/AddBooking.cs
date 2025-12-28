@@ -65,7 +65,8 @@ public static class AddBooking
 			// END Добавление клиента
 
 			// --- ЛОГИКА ПРОМОКОДА ---
-			decimal finalPrice = roomType.Price;
+			var nightsCount = request.Request.CheckOutDate.DayNumber - request.Request.CheckInDate.DayNumber;
+			decimal finalPrice = roomType.Price * nightsCount;
 			Promocode? appliedPromo = null;
 
 			if (!string.IsNullOrWhiteSpace(request.Request.Promocode))
@@ -85,7 +86,7 @@ public static class AddBooking
 				if (appliedPromo.CurrentUsages >= appliedPromo.MaxUsages)
 					throw new InvalidOperationException("Лимит использований промокода исчерпан.");
 
-				if (roomType.Price < appliedPromo.MinBookingAmount)
+				if (finalPrice < appliedPromo.MinBookingAmount)
 					throw new InvalidOperationException($"Минимальная сумма для промокода: {appliedPromo.MinBookingAmount}");
 
 				var alreadyUsed = await _dbContext.UsedPromocodes
@@ -99,14 +100,14 @@ public static class AddBooking
 
 				// Расчет скидки
 				decimal discount = appliedPromo.Type == DiscountType.Percent
-					? (roomType.Price * appliedPromo.Value / 100)
+					? (finalPrice * appliedPromo.Value / 100)
 					: appliedPromo.Value;
 
 				// Проверка MaxDiscountAmount (если это проценты)
 				if (appliedPromo.MaxDiscountAmount.HasValue && discount > appliedPromo.MaxDiscountAmount.Value)
 					discount = appliedPromo.MaxDiscountAmount.Value;
 
-				finalPrice = Math.Max(0, roomType.Price - discount);
+				finalPrice = Math.Max(0, finalPrice - discount);
 
 				// Обновляем счетчик промокода
 				appliedPromo.CurrentUsages++;

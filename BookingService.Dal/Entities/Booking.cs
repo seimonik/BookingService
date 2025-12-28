@@ -15,8 +15,10 @@ public class Booking : IEntity
 	public DateOnly CheckInDate { get; set; }
 	public DateOnly CheckOutDate { get; set; }
 	public Guid IdempotencyKey { get; set; }
+	public Guid? CardId { get; set; } // Для тестирования оплаты
 
 	public Client Client { get; set; } = null!;
 	public RoomType RoomType { get; set; } = null!;
 	public Room Room { get; set; } = null!;
+	public Card? Card { get; set; }
 }

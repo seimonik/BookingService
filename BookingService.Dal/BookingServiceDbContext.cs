@@ -19,19 +19,22 @@ public class BookingServiceDbContext : DbContext
 	public DbSet<Promocode> Promocodes { get; set; } = null!;
 	public DbSet<UsedPromocodes> UsedPromocodes { get; set; } = null!;
 	public DbSet<Card> Cards { get; set; }
-
+	public DbSet<CancellationPolicy> CancellationPolicies { get; set; } = null!;
+	public DbSet<EmailVerificationCode> EmailVerificationCodes { get; set; } = null!;
 
 	public BookingServiceDbContext(DbContextOptions<BookingServiceDbContext> options) : base(options)
 	{
 	}
 
-	public BookingServiceDbContext() { }
+	public BookingServiceDbContext()
+	{ }
 
 	public static NpgsqlDataSource GetDataSource(string connectionString)
 	{
 		var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
 
 		dataSourceBuilder.MapEnum<BookingStatus>(pgName: "lookups.BookingStatus", nameTranslator: _nullNameTranslator);
+		dataSourceBuilder.MapEnum<PenaltyType>(pgName: "lookups.PenaltyType", nameTranslator: _nullNameTranslator);
 
 		return dataSourceBuilder.Build();
 	}
@@ -41,5 +44,6 @@ public class BookingServiceDbContext : DbContext
 		modelBuilder.ApplyConfigurationsFromAssembly(typeof(BookingServiceDbContext).Assembly);
 
 		modelBuilder.HasPostgresEnum<BookingStatus>(schema: "lookups", nameTranslator: _nullNameTranslator);
+		modelBuilder.HasPostgresEnum<PenaltyType>(schema: "lookups", nameTranslator: _nullNameTranslator);
 	}
 }

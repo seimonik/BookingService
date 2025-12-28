@@ -7,4 +7,5 @@ public class PromocodeValidationResult
 	public decimal DiscountAmount { get; set; }
 	public decimal FinalPrice { get; set; }
 	public string? DiscountType { get; set; }
+	public string? Description { get; set; }
 }

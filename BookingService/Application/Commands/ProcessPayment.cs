@@ -28,6 +28,15 @@ public static class ProcessPayment
 			card.Balance -= request.Request.Amount;
 			await dbContext.SaveChangesAsync(cancellationToken);
 
+			// for test
+			if (request.Request.BookingId != null)
+			{
+				var booking = await dbContext.Bookings
+					.FirstOrDefaultAsync(x => x.Id == request.Request.BookingId, cancellationToken);
+				booking!.CardId = card.Id;
+				await dbContext.SaveChangesAsync(cancellationToken);
+			}
+
 			return new ProcessPaymentResult { IsValid = true, Message = "Оплата прошла." };
 		}
 	}

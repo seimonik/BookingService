@@ -4,6 +4,7 @@ using BookingService.Dal;
 using BookingService.Dal.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,16 +13,18 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BookingService.Dal.Migrations
 {
     [DbContext(typeof(BookingServiceDbContext))]
-    partial class BookingServiceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251227194343_AddCancellationPoliciesTable")]
+    partial class AddCancellationPoliciesTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.16")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "lookups", "BookingStatus", new[] { "Pending", "Confirmed", "Cancelled", "CustomCancellation" });
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "lookups", "BookingStatus", new[] { "Pending", "Confirmed", "Cancelled" });
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "lookups", "PenaltyType", new[] { "Percentage", "FixedAmount", "Nights" });
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
@@ -29,9 +32,6 @@ namespace BookingService.Dal.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CardId")
                         .HasColumnType("uuid");
 
                     b.Property<DateOnly>("CheckInDate")
@@ -63,8 +63,6 @@ namespace BookingService.Dal.Migrations
                         .HasColumnType("numeric");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CardId");
 
                     b.HasIndex("ClientId");
 
@@ -145,38 +143,6 @@ namespace BookingService.Dal.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Clients");
-                });
-
-            modelBuilder.Entity("BookingService.Dal.Entities.EmailVerificationCode", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("ExpiresAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsUsed")
-                        .HasColumnType("boolean");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Email");
-
-                    b.HasIndex("Email", "IsUsed");
-
-                    b.ToTable("EmailVerificationCodes");
                 });
 
             modelBuilder.Entity("BookingService.Dal.Entities.Hotel", b =>
@@ -359,10 +325,6 @@ namespace BookingService.Dal.Migrations
 
             modelBuilder.Entity("BookingService.Dal.Entities.Booking", b =>
                 {
-                    b.HasOne("BookingService.Dal.Entities.Card", "Card")
-                        .WithMany()
-                        .HasForeignKey("CardId");
-
                     b.HasOne("BookingService.Dal.Entities.Client", "Client")
                         .WithMany()
                         .HasForeignKey("ClientId")
@@ -376,8 +338,6 @@ namespace BookingService.Dal.Migrations
                     b.HasOne("BookingService.Dal.Entities.RoomType", "RoomType")
                         .WithMany()
                         .HasForeignKey("RoomTypeId");
-
-                    b.Navigation("Card");
 
                     b.Navigation("Client");
 

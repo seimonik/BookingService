@@ -9,6 +9,8 @@ public class RoomType : IEntity
 	public string Name { get; set; } = "";
 	public decimal Price { get; set; }
 	public int TotalCount { get; set; } // Общее кол-во физических номеров этого типа
+	public Guid? CancellationPolicyId { get; set; }
 
 	public Hotel Hotel { get; set; } = null!;
+	public CancellationPolicy? CancellationPolicy { get; set; }
 }

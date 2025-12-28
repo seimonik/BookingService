@@ -13,4 +13,14 @@ public static class RoomConversionExtensions
 			TotalCount = room.TotalCount,
 			Price = room.Price
 		};
+
+	public static FullRoomTypeModel ToFullRoomTypeModel(this RoomType room) =>
+		new()
+		{
+			Id = room.Id,
+			Name = room.Name,
+			Price = room.Price,
+			Hotel = room.Hotel.ToHotelMiniModel(),
+			CancellationPolicy = room.CancellationPolicy?.ToCancellationPolicyModel()
+		};
 }

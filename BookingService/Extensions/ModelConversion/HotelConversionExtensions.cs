@@ -15,4 +15,13 @@ public static class HotelConversionExtensions
 			RoomTypes = hotel.RoomTypes
 				.Select(x => x.ToRoomTypeModel()).ToArray()
 		};
+
+	public static HotelMiniModel ToHotelMiniModel(this Hotel hotel) =>
+		new()
+		{
+			Id = hotel.Id,
+			Name = hotel.Name,
+			Address = hotel.Address,
+			Country = hotel.Country
+		};
 }
